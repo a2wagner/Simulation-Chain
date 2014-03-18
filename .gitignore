@@ -1,0 +1,9 @@
+*
+!run.sh
+!sim.sh
+!convert.sh
+!det.sh
+!simulate.h
+!simulate.C
+!README.md
+!.gitignore
