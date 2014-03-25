@@ -7,3 +7,8 @@
 !simulate.C
 !README.md
 !.gitignore
+!g4run/
+!g4run/*
+g4run/g4run.mac
+!sim_data/
+!g4_sim/
