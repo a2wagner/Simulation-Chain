@@ -181,7 +181,8 @@ echo -e " Total `echo $t | sed -e 's/000000000$/G/' |sed -e 's/000000$/M/' | sed
 d=$(round $t/1000000*9.21 1)  # round estimated time in hours to one decimal place
 #h=$(echo $d | sed 's/.[^.]*$//')  # sed cuts all after last occuring dot (cuts all if no dot exists...)
 h=$(echo $d | sed 's/\..*//')  # sed cuts all after first occuring dot, if existing
-echo -n "Pretty rough time estimation: "
+# Note: time estimation only valid for my computer which uses a 3.20GHz Intel Dual-Core and 4GB of RAM 
+echo -n "Pretty rough time estimation (based on a 3.2GHz Intel Dual-Core and 4GB RAM): "
 if [ $h -gt 24 ]; then
 	echo "$d hours (about $(($h/24)) days and $(($h%24)) hours)"
 elif [ $h = 0 ]; then
