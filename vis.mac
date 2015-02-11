@@ -11,9 +11,9 @@
 #
 # Sets some default verbose
 #
-/control/verbose 2
+/control/verbose 0
 /control/saveHistory
-/run/verbose 2
+/run/verbose 0
 #
 # create empty scene
 #
@@ -30,8 +30,6 @@
 #/vis/viewer/create
 
 #loading the macro for the simulation process
-#/control/execute /home/wagners/Desktop/g4work/bin/Linux-g++/g4run.mac
-/control/execute /home/wagners/Desktop/g4work/bin/Linux-g++/g4run_multi.mac
-#/control/execute /home/wagners/Desktop/simulation/etap/g4run.mac
+/control/execute macros/g4run_multi.mac
 #/control/execute macros/doBeamOnTarget.mac
 
