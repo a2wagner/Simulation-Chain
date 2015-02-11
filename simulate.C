@@ -13,7 +13,7 @@
 #include "PSimpleVMDFF.h"
 */
 
-void simulate(Int_t events, Int_t run, const char* channel)
+void simulate(Int_t events, Int_t run, const char* channel, const char* output_path)
 {
 	gROOT->Reset();
 
@@ -26,7 +26,7 @@ void simulate(Int_t events, Int_t run, const char* channel)
 
 	// prepare output file name
 	stringstream ss;
-	ss << "sim_" << channel << "_" << std::setw(2) << std::setfill('0') << run;
+	ss << output_path << "/sim_" << channel << "_" << std::setw(2) << std::setfill('0') << run;
 	std::string out;
 	ss >> out;
 

@@ -10,6 +10,43 @@
 #
 ####################
 
+# IMPORTANT!
+# change the paths were the data is stored to your needs
+DATA_OUTPUT_PATH="~/MC"
+A2_GEANT_PATH="~/git/a2geant"
+
+# check if the given output path exists
+p="`eval echo ${DATA_OUTPUT_PATH//>}`"
+if [ ! -d "$p" ]; then
+	echo "'$p' does not exist!" >&2
+	exit 1
+fi
+
+# check if the A2 Geant4 executable exists in the given path (created this way when a2geant git repo is used)
+g="`eval echo ${A2_GEANT_PATH//>}`"
+if [ ! -d "$g" ]; then
+	echo "'$g' does not exist!" >&2
+	exit 1
+elif [ ! -f "$g/A2" ]; then
+	echo "A2 Geant executable not found in '$g'!" >&2
+	exit 1
+fi
+
+# create folders to store Pluto and Geant4 data
+if [ ! -d "$p/sim_data" ]; then
+	mkdir "$p/sim_data"
+fi
+if [ ! -d "$p/g4_sim" ]; then
+	mkdir "$p/g4_sim"
+fi
+
+# check if the pluto2mkin converter is available, build the executable if not
+if [ ! -f "$g/pluto2mkin" ]; then
+	echo "No pluto2mkin executable found in Geant directory!" >&2
+	echo "Please build the pluto2mkin converter first and adapt the path in 'convert.sh'"
+	exit 1
+fi
+
 s=""
 #s=$s" etap_e+e-g_oldFF"  # simulate with the old FF
 #s=$s" etap_e+e-g_FF1"  # simulate with FF = 1
@@ -83,9 +120,9 @@ if [ $a = y ]; then #simulate the same amount of events for all files
 		c[4*n+2]=$ne
 
 		#determine biggest number used for the generated files to start from there [maybe possible via iteration over file list via for i in $(ls); do (or ls -1 instead of only ls)]
-		mxsim=`ls -1 sim_data | grep -v mkin | grep $i"_" | sed 's/^.*_\(.*\)\..*$/\1/' | sort -nr | head -1`  # maximum number used for Pluto generated files
+		mxsim=`ls -1 "$p/sim_data" | grep -v mkin | grep $i"_" | sed 's/^.*_\(.*\)\..*$/\1/' | sort -nr | head -1`  # maximum number used for Pluto generated files
 		#explanation: list generated files | without mkin in its name | for the actual channel | get string between last occurrence of an underscore and the following dot (should deliver only the numbering used for the different files), e. g. delivers number for bla_bla_number.extension | sort this list numerically and reversed | and assign the first value (highest number) to the variable [grep $s inserted later, even possible without for all channels]
-		mxgnt=`ls -1 g4_sim | grep $i"_" | sed 's/^.*_\(.*\)\..*$/\1/' | sort -nr | head -1`  # maximum number used for Geant4 simulated files
+		mxgnt=`ls -1 "$p/g4_sim" | grep $i"_" | sed 's/^.*_\(.*\)\..*$/\1/' | sort -nr | head -1`  # maximum number used for Geant4 simulated files
 		#remove leading zeros
 		mxsim=${mxsim#0*} #alternative with sed -e 's/^0*//'
 		mxgnt=${mxgnt#0*}
@@ -131,8 +168,8 @@ else #n (no) was chosen, the amount of simulated events will be chosen independe
 			c[4*j+2]=$ne
 
 			#determine biggest number used for the generated files to start from there
-			mxsim=`ls -1 sim_data | grep -v mkin | grep $i"_" | sed 's/^.*_\(.*\)\..*$/\1/' | sort -nr | head -1`  # maximum number used for Pluto generated files
-			mxgnt=`ls -1 g4_sim | grep $i"_" | sed 's/^.*_\(.*\)\..*$/\1/' | sort -nr | head -1`  # maximum number used for Geant4 simulated files
+			mxsim=`ls -1 "$p/sim_data" | grep -v mkin | grep $i"_" | sed 's/^.*_\(.*\)\..*$/\1/' | sort -nr | head -1`  # maximum number used for Pluto generated files
+			mxgnt=`ls -1 "$p/g4_sim" | grep $i"_" | sed 's/^.*_\(.*\)\..*$/\1/' | sort -nr | head -1`  # maximum number used for Geant4 simulated files
 			#remove leading zeros
 			mxsim=${mxsim#0*}
 			mxgnt=${mxgnt#0*}
@@ -174,7 +211,8 @@ for i in $(seq 0 $((${#c[*]}/4-1))); do
 	t=$(($t + ${c[$((4*$i+1))]}*${c[$((4*$i+2))]}))
 	f=$(($f + ${c[$((4*$i+1))]}))
 done
-echo -e " Total `echo $t | sed -e 's/000000000$/G/' |sed -e 's/000000$/M/' | sed -e 's/000$/k/'` events in $f files\n"
+echo -e " Total `echo $t | sed -e 's/000000000$/G/' |sed -e 's/000000$/M/' | sed -e 's/000$/k/'` events in $f files"
+echo -e "Files will be stored in $p\n"
 
 #Laufzeit: 5,6M Events (400k pro Kanal bei 14 Kanälen) dauern knapp 51,5 Stunden (2d, 3,5h) [--> ca. 9,2 Stunden pro 1M Events]
 #58 million events done in around 22 days and 6 hours (1923784 s ~534.4 hours) --> ca. 9,213 hours per 1M events
@@ -208,14 +246,14 @@ echo ""
 start=$(date +%s)
 begin=$(date +"%A, %e. %B %Y %k:%M:%S %Z")
 
-#arguments: total number of files, total events, number of channels (start counting from 0), length of array, array content
-./sim.sh $f $t $((${#c[*]}/4-1)) ${#c[*]} ${c[@]} #${c[*]}
-./convert.sh $f $t $((${#c[*]}/4-1)) ${#c[*]} ${c[@]}
-./det.sh $f $t $((${#c[*]}/4-1)) ${#c[*]} ${c[@]}
+#arguments: save path, [pwd/geant path,] total number of files, total events, number of channels (start counting from 0), length of array, array content
+./sim.sh "$p" $f $t $((${#c[*]}/4-1)) ${#c[*]} ${c[@]} #${c[*]}
+./convert.sh "$p" "$g" $f $t $((${#c[*]}/4-1)) ${#c[*]} ${c[@]}
+./det.sh "$p" "`pwd`" "$g" $f $t $((${#c[*]}/4-1)) ${#c[*]} ${c[@]}
 
-mv sim_*.root sim_data
-mv g4_sim_*.root g4_sim
-rm -f currentFile
+#mv "$p/sim_*.root" "$p/sim_data"
+#mv "$p/g4_sim_*.root" "$p/g4_sim"
+rm -f "$p/currentFile"
 
 #stop=$(date +%s.%N)
 stop=$(date +%s)

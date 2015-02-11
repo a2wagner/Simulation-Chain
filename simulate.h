@@ -21,7 +21,7 @@ inline double thetaCrit2()
 	return thCr*thCr;
 }
 
-void simulate(Int_t events, Int_t output, const char* channel);
+void simulate(Int_t events, Int_t output, const char* channel, const char* output_path);
 
 void sim_etap_eeg(Int_t events, char* output);
 void sim_etap_eeg_oldFF(Int_t events, char* output);
