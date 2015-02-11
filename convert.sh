@@ -18,7 +18,7 @@ echo ""
 
 for i in $(seq 0 $5); do
 	for j in $(seq ${c[$((4*$i+1))]}); do
-		echo "Converting files for Geant, channel ${c[$((4*$i))]} ($(($i+1))/$(($5+1))), file `printf "%02d" $(($j+${c[$((4*$i+3))]}))` ($j/${c[$((4*$i+1))]})">currentFile
+		echo "Converting files for Geant, channel ${c[$((4*$i))]} ($(($i+1))/$(($5+1))), file `printf "%02d" $(($j+${c[$((4*$i+3))]}))` ($j/${c[$((4*$i+1))]})">"$1/currentFile"
 		"$2"/pluto2mkin --input "$1/sim_data/sim_${c[$((4*$i))]}"_`printf "%02d" $(($j+${c[$((4*$i+3))]}))`.root
 		# The vertex position can be smeared according to the target length (z vertex) and the beam diameter (x and y verices)
 		# The z smearing is uniform, x and y are gaussian shaped. The example below is for a 10cm target with 2cm beam diameter. Change values accordingly.
