@@ -16,6 +16,8 @@
 void simulate(Int_t events, Int_t run, const char* channel, const char* output_path)
 {
 	gROOT->Reset();
+	// properly initialise TRandom seed which is used by the smearing TF1 functions, independent of the Pluto random seed initialisation
+	gRandom->SetSeed(0);
 
 	// smear the beam
 	PBeamSmearing *smear = new PBeamSmearing("beam_smear", "Beam Smearing");
