@@ -22,7 +22,7 @@ void simulate(Int_t events, Int_t run, const char* channel, const char* output_p
 	// smear the beam
 	PBeamSmearing *smear = new PBeamSmearing("beam_smear", "Beam Smearing");
 	smear->SetReaction("g + p");  // define beam + target
-	smear->SetMomentumFunction(new TF1("bremsstrahlung", "1./x", 1.45, 1.604));  // define function, here 1./x from 1.45 to 1.6 GeV (Pluto always calculate in GeV)
+	smear->SetMomentumFunction(new TF1("bremsstrahlung", "1./x", 1.45, 1.58));  // define function, here 1./x from 1.45 to 1.58 GeV [max possible energy in EPT is 1.577 GeV] (Pluto always calculate in GeV)
 	smear->SetAngularSmearing(new TF1("angle", "x/(x*x + thetaCrit2())/(x*x + thetaCrit2())", 0., 5.*0.000510999/1.604));  // define the angular distribution of the bremsstrahlung spectrum (interval 0 to 5*theta_crit represents nearly the whole shape)
 	makeDistributionManager()->Add(smear);  // add to Pluto
 
