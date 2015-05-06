@@ -1,6 +1,12 @@
 Simulation Chain
 ================
 
+####Important note:
+
+This is the old simulation chain with (ugly) bash scripts. The new version, written in Python, can be found here: [new simulation chain](https://github.com/a2wagner/simulation_chain)
+
+####End of note
+
 These are the scripts which I use to simulate events. Further programs used are the Pluto event generator and the Geant4 simulation code from the A2.
 
 The scripts will run interactive, the only thing is to adapt the paths where the data should be stored as well as where the a2geant package is located and start everything via `./run.sh`.
